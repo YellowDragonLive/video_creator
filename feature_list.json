@@ -1,0 +1,166 @@
+{
+    "project": "Seedance 视频制作工具",
+    "description": "基于 Doubao-Seedance-2.0 的自动化视频制作工具，第一阶段聚焦 Prompt 生成与素材管理",
+    "total_features": 10,
+    "passing_features": 1,
+    "features": [
+        {
+            "id": "F001",
+            "category": "infrastructure",
+            "priority": "high",
+            "description": "Flask 应用可正常启动，访问首页返回 Prompt 编辑器页面",
+            "steps": [
+                "运行 python app.py 启动服务",
+                "访问 http://localhost:5000",
+                "确认页面正确渲染，包含导航栏和主体内容区",
+                "确认控制台无报错"
+            ],
+            "passes": true,
+            "last_tested": "2026-02-22T20:25:00+08:00",
+            "notes": "Flask 启动成功，首页/模板API/项目列表API 全部 200 OK"
+        },
+        {
+            "id": "F002",
+            "category": "functional",
+            "priority": "high",
+            "description": "Prompt 五要素编辑器：用户可分别输入角色、场景、动作、运镜、氛围五个维度的描述",
+            "steps": [
+                "打开 Prompt 编辑器页面",
+                "看到五个独立的文本输入区域，各自有标签和提示语",
+                "在每个区域输入文本",
+                "确认输入内容被正确保留"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F003",
+            "category": "functional",
+            "priority": "high",
+            "description": "Prompt 实时预览：右侧面板实时组合显示五要素合成的最终 Prompt 文本",
+            "steps": [
+                "在五要素编辑器中输入内容",
+                "实时预览面板同步更新显示组合后的完整 Prompt",
+                "修改任意要素，预览立即反映变化",
+                "预览格式清晰可读"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F004",
+            "category": "functional",
+            "priority": "high",
+            "description": "视频参数面板：用户可选择分辨率(480p/720p)、时长(2-12秒)、宽高比(16:9/4:3/1:1)、任务类型",
+            "steps": [
+                "在 Prompt 编辑器页面看到参数配置面板",
+                "选择不同的分辨率选项",
+                "滑动或输入时长",
+                "选择宽高比",
+                "选择任务类型（文生视频/图生视频/视频编辑/视频延长）",
+                "参数变更反映在预览的导出 JSON 中"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F005",
+            "category": "functional",
+            "priority": "high",
+            "description": "Prompt 保存与加载：用户可保存当前 Prompt 为项目，并从列表中加载已保存的项目",
+            "steps": [
+                "填写 Prompt 五要素和参数",
+                "点击保存按钮，输入项目名称",
+                "确认保存成功提示",
+                "刷新页面后，从项目列表中看到已保存的项目",
+                "点击加载，所有字段恢复为之前保存的值"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F006",
+            "category": "functional",
+            "priority": "high",
+            "description": "Prompt 模板系统：提供预置模板（商业广告、影视制作、社交媒体），用户可一键加载模板",
+            "steps": [
+                "在编辑器中看到模板选择区域",
+                "点击某个模板（如'商业广告'）",
+                "五要素编辑器自动填充模板内容",
+                "预览面板同步更新",
+                "用户可在模板基础上修改"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F007",
+            "category": "functional",
+            "priority": "high",
+            "description": "素材上传：用户可通过拖拽或点击上传图片/视频/音频文件到素材库",
+            "steps": [
+                "打开素材管理页面",
+                "看到拖拽上传区域",
+                "拖拽图片文件到上传区",
+                "确认上传成功，文件出现在素材列表中",
+                "验证缩略图已自动生成"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F008",
+            "category": "functional",
+            "priority": "medium",
+            "description": "素材管理：素材列表支持网格/列表视图切换、搜索、标签过滤",
+            "steps": [
+                "上传多个素材文件",
+                "切换网格视图和列表视图",
+                "使用搜索框搜索素材名称",
+                "为素材添加标签",
+                "通过标签过滤素材"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F009",
+            "category": "functional",
+            "priority": "medium",
+            "description": "素材引用：在 Prompt 编辑器中可引用素材库中的素材，通过 @ 符号关联",
+            "steps": [
+                "确保素材库中已有素材",
+                "在 Prompt 编辑器中看到素材引用区",
+                "从素材库选择素材添加引用",
+                "引用以 @素材名 形式出现在预览中",
+                "导出的 JSON 包含引用素材的 ID"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        },
+        {
+            "id": "F010",
+            "category": "functional",
+            "priority": "medium",
+            "description": "Prompt 导出为 JSON：导出的 JSON 格式与 Seedance API 请求体对齐，可直接用于后续 API 调用",
+            "steps": [
+                "填写完整的 Prompt（五要素+参数+素材引用）",
+                "点击导出按钮",
+                "获得 JSON 文件或剪贴板内容",
+                "JSON 包含 model、prompt、resolution、duration、ratio 等字段",
+                "JSON 格式正确可被解析"
+            ],
+            "passes": false,
+            "last_tested": null,
+            "notes": ""
+        }
+    ]
+}

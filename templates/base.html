@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Seedance 视频制作工具{% endblock %}</title>
+    <meta name="description" content="基于 Doubao-Seedance-2.0 的智能视频制作工具">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="main-navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🎬</span>
+            <span class="nav-title">Seedance Studio</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}" id="nav-prompt">
+                <span class="nav-icon">✍️</span>
+                <span>Prompt 编辑器</span>
+            </a>
+            <a href="/assets" class="nav-link {% if request.path == '/assets' %}active{% endif %}" id="nav-assets">
+                <span class="nav-icon">📦</span>
+                <span>素材管理</span>
+            </a>
+        </div>
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            <span class="status-text">本地模式</span>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content" id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 通知弹窗 -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

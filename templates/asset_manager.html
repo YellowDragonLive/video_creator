@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}素材管理 — Seedance Studio{% endblock %}
+
+{% block content %}
+<div class="assets-layout">
+    <!-- 顶部工具栏 -->
+    <div class="assets-toolbar">
+        <h1 class="panel-title">📦 素材管理</h1>
+        <div class="toolbar-center">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-input" placeholder="搜索素材名称...">
+            </div>
+            <div class="filter-chips" id="type-filter">
+                <button class="chip chip-sm active" data-type="">全部</button>
+                <button class="chip chip-sm" data-type="image">🖼️ 图片</button>
+                <button class="chip chip-sm" data-type="video">🎬 视频</button>
+                <button class="chip chip-sm" data-type="audio">🎵 音频</button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <div class="view-toggle" id="view-toggle">
+                <button class="btn-icon active" data-view="grid" title="网格视图">⊞</button>
+                <button class="btn-icon" data-view="list" title="列表视图">☰</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 标签过滤栏 -->
+    <div class="tags-bar" id="tags-bar" style="display:none;">
+        <span class="tags-label">🏷️ 标签：</span>
+        <div class="tag-chips" id="tag-chips"></div>
+    </div>
+
+    <!-- 上传区 -->
+    <div class="upload-zone" id="upload-zone">
+        <div class="upload-content">
+            <div class="upload-icon">📤</div>
+            <div class="upload-text">拖拽文件到此处上传</div>
+            <div class="upload-hint">或点击选择文件（支持图片、视频、音频）</div>
+            <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*" style="display:none">
+        </div>
+        <div class="upload-progress" id="upload-progress" style="display:none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="progress-text">上传中...</span>
+        </div>
+    </div>
+
+    <!-- 素材网格 -->
+    <div class="assets-grid" id="assets-grid">
+        <div class="assets-empty" id="assets-empty">
+            <div class="empty-icon">📭</div>
+            <div class="empty-text">素材库为空</div>
+            <div class="empty-hint">上传图片、视频或音频文件开始使用</div>
+        </div>
+    </div>
+</div>
+
+<!-- 素材详情侧边栏 -->
+<div class="asset-sidebar" id="asset-sidebar" style="display:none;">
+    <div class="sidebar-header">
+        <h3 class="sidebar-title" id="sidebar-title">素材详情</h3>
+        <button class="btn-close" id="btn-close-sidebar">&times;</button>
+    </div>
+    <div class="sidebar-body">
+        <div class="sidebar-preview" id="sidebar-preview"></div>
+        <div class="sidebar-info">
+            <div class="info-row"><span class="info-key">类型</span><span class="info-val" id="info-type">-</span></div>
+            <div class="info-row"><span class="info-key">原始名称</span><span class="info-val" id="info-original">-</span>
+            </div>
+            <div class="info-row"><span class="info-key">大小</span><span class="info-val" id="info-size">-</span></div>
+            <div class="info-row"><span class="info-key">创建时间</span><span class="info-val" id="info-date">-</span></div>
+        </div>
+        <div class="sidebar-tags">
+            <label class="param-label">标签</label>
+            <div class="tag-input-wrapper">
+                <input type="text" class="tag-input" id="tag-input" placeholder="添加标签，回车确认">
+            </div>
+            <div class="tag-list" id="sidebar-tags"></div>
+        </div>
+        <div class="sidebar-actions">
+            <button class="btn btn-danger btn-sm" id="btn-delete-asset">🗑️ 删除素材</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/assets.js') }}"></script>
+{% endblock %}

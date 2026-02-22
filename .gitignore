@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 临时封装脚本 (UAC bypass)
+_run_*.py
+
+# 用户数据 (素材文件可能很大)
+data/assets/*
+data/thumbnails/*
+!data/assets/.gitkeep
+!data/thumbnails/.gitkeep
+
+# 项目数据保留
+# data/projects/ 会被 Git 追踪
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日志
+*.log

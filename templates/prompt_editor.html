@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block title %}Prompt 编辑器 — Seedance Studio{% endblock %}
+
+{% block content %}
+<div class="editor-layout">
+    <!-- 左侧：五要素编辑器 -->
+    <div class="editor-panel">
+        <div class="panel-header">
+            <h1 class="panel-title">🎬 Prompt 编辑器</h1>
+            <div class="panel-actions">
+                <button class="btn btn-ghost" id="btn-load-project" title="加载项目">
+                    📂 加载
+                </button>
+                <button class="btn btn-primary" id="btn-save-project" title="保存项目">
+                    💾 保存
+                </button>
+            </div>
+        </div>
+
+        <!-- 模板选择 -->
+        <div class="template-bar">
+            <span class="template-label">快速模板：</span>
+            <div class="template-chips" id="template-chips">
+                {% for t in templates %}
+                <button class="chip" data-template-id="{{ t.id }}">{{ t.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 五要素输入区 -->
+        <div class="elements-container" id="elements-container">
+            <div class="element-card" data-key="subject">
+                <div class="element-header">
+                    <span class="element-icon">👤</span>
+                    <span class="element-label">角色指定</span>
+                </div>
+                <textarea class="element-input" id="input-subject"
+                    placeholder="描述主体：外貌特征、服装、表情、姿态。&#10;例：一位穿着红色汉服的年轻女子，长发飘逸，眼神温柔" rows="3"></textarea>
+            </div>
+
+            <div class="element-card" data-key="scene">
+                <div class="element-header">
+                    <span class="element-icon">🏞️</span>
+                    <span class="element-label">场景设定</span>
+                </div>
+                <textarea class="element-input" id="input-scene"
+                    placeholder="描述环境：时代背景、地点、光照条件。&#10;例：19世纪的伦敦大街，黄昏暖光，街道两旁有维多利亚式建筑" rows="3"></textarea>
+            </div>
+
+            <div class="element-card" data-key="action">
+                <div class="element-header">
+                    <span class="element-icon">🎭</span>
+                    <span class="element-label">动作 / 剧情</span>
+                </div>
+                <textarea class="element-input" id="input-action"
+                    placeholder="描述运动序列：主体动作、互动、时间顺序。&#10;例：她缓缓转身，微笑着向镜头走来，裙摆随风飘动" rows="3"></textarea>
+            </div>
+
+            <div class="element-card" data-key="camera">
+                <div class="element-header">
+                    <span class="element-icon">🎥</span>
+                    <span class="element-label">镜头语言</span>
+                </div>
+                <textarea class="element-input" id="input-camera"
+                    placeholder="描述运镜方式：推/拉/摇/移/环绕/跟随/升降。&#10;例：慢推镜头，从全景逐渐推进到面部特写" rows="3"></textarea>
+            </div>
+
+            <div class="element-card" data-key="atmosphere">
+                <div class="element-header">
+                    <span class="element-icon">🌈</span>
+                    <span class="element-label">氛围 / 声音</span>
+                </div>
+                <textarea class="element-input" id="input-atmosphere"
+                    placeholder="描述风格、色调、音效。&#10;例：电影感，暖色调，背景有轻微虚化，柔和的钢琴配乐" rows="3"></textarea>
+            </div>
+        </div>
+
+        <!-- 参数面板 -->
+        <div class="params-panel" id="params-panel">
+            <div class="params-header">
+                <span class="element-icon">⚙️</span>
+                <span class="element-label">视频参数</span>
+            </div>
+            <div class="params-grid">
+                <div class="param-group">
+                    <label class="param-label">任务类型</label>
+                    <select class="param-select" id="param-task-type">
+                        {% for t in task_types %}
+                        <option value="{{ t.id }}">{{ t.icon }} {{ t.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="param-group">
+                    <label class="param-label">模型</label>
+                    <select class="param-select" id="param-model">
+                        {% for m in models %}
+                        <option value="{{ m.id }}" {% if m.recommended %}selected{% endif %}>
+                            {{ m.name }}{% if m.recommended %} ⭐{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="param-group">
+                    <label class="param-label">分辨率</label>
+                    <div class="param-chips" id="param-resolution">
+                        {% for r in resolutions %}
+                        <button class="chip chip-sm {% if r == '720p' %}active{% endif %}" data-value="{{ r }}">{{ r
+                            }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="param-group">
+                    <label class="param-label">宽高比</label>
+                    <div class="param-chips" id="param-ratio">
+                        {% for r in ratios %}
+                        <button class="chip chip-sm {% if r == '16:9' %}active{% endif %}" data-value="{{ r }}">{{ r
+                            }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="param-group">
+                    <label class="param-label">时长: <span id="duration-display">5</span>秒</label>
+                    <input type="range" class="param-slider" id="param-duration" min="{{ duration_range[0] }}"
+                        max="{{ duration_range[1] }}" value="5" step="1">
+                </div>
+            </div>
+        </div>
+
+        <!-- 素材引用区 -->
+        <div class="ref-panel" id="ref-panel">
+            <div class="params-header">
+                <span class="element-icon">🔗</span>
+                <span class="element-label">素材引用</span>
+            </div>
+            <div class="ref-assets-list" id="ref-assets-list">
+                <div class="ref-empty">暂无引用素材。可前往<a href="/assets">素材管理</a>上传素材后返回引用。</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="btn-add-ref">+ 添加素材引用</button>
+        </div>
+    </div>
+
+    <!-- 右侧：实时预览 -->
+    <div class="preview-panel">
+        <div class="preview-header">
+            <h2 class="preview-title">📋 Prompt 预览</h2>
+            <div class="preview-actions">
+                <button class="btn btn-ghost btn-sm" id="btn-copy-prompt" title="复制文本">📋 复制</button>
+                <button class="btn btn-accent btn-sm" id="btn-export-json" title="导出 JSON">📥 导出 JSON</button>
+            </div>
+        </div>
+
+        <!-- Prompt 文本预览 -->
+        <div class="preview-section">
+            <div class="preview-label">合成 Prompt</div>
+            <div class="preview-text" id="preview-text">
+                <span class="preview-placeholder">在左侧填写五要素，此处将实时显示合成的 Prompt 文本...</span>
+            </div>
+        </div>
+
+        <!-- 参数汇总 -->
+        <div class="preview-section">
+            <div class="preview-label">参数配置</div>
+            <div class="preview-meta" id="preview-meta">
+                <div class="meta-item"><span class="meta-key">模型</span><span class="meta-val" id="meta-model">Seedance
+                        2.0</span></div>
+                <div class="meta-item"><span class="meta-key">任务</span><span class="meta-val" id="meta-task">文生视频</span>
+                </div>
+                <div class="meta-item"><span class="meta-key">分辨率</span><span class="meta-val"
+                        id="meta-resolution">720p</span></div>
+                <div class="meta-item"><span class="meta-key">宽高比</span><span class="meta-val"
+                        id="meta-ratio">16:9</span></div>
+                <div class="meta-item"><span class="meta-key">时长</span><span class="meta-val"
+                        id="meta-duration">5秒</span></div>
+            </div>
+        </div>
+
+        <!-- API JSON 预览 -->
+        <div class="preview-section">
+            <div class="preview-label">API Payload</div>
+            <pre class="preview-code" id="preview-json">{}</pre>
+        </div>
+
+        <!-- 已保存项目列表 -->
+        <div class="preview-section" id="projects-section" style="display:none;">
+            <div class="preview-label">已保存的项目</div>
+            <div class="projects-list" id="projects-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 保存对话框 -->
+<div class="modal-overlay" id="save-modal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>💾 保存项目</h3>
+            <button class="btn-close" id="btn-close-save">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label class="param-label">项目名称</label>
+            <input type="text" class="modal-input" id="save-project-name" placeholder="输入项目名称...">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" id="btn-cancel-save">取消</button>
+            <button class="btn btn-primary" id="btn-confirm-save">保存</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/prompt.js') }}"></script>
+{% endblock %}
