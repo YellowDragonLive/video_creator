@@ -6,6 +6,7 @@ import time
 
 from models.prompt import SeedancePrompt
 import config
+from utils.logger import logger
 
 
 # ── 预置模板库 ──────────────────────────────────────────────────
@@ -118,6 +119,7 @@ def save_project(data: dict) -> str:
 
     filepath = os.path.join(config.PROJECTS_DIR, f'{prompt.id}.json')
     prompt.save(filepath)
+    logger.info(f"项目已保存: {prompt.name} (ID: {prompt.id})")
     return prompt.id
 
 
@@ -160,5 +162,6 @@ def delete_project(project_id: str) -> bool:
     filepath = os.path.join(config.PROJECTS_DIR, f'{project_id}.json')
     if os.path.exists(filepath):
         os.remove(filepath)
+        logger.info(f"项目已删除: {project_id}")
         return True
     return False

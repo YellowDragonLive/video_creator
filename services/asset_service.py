@@ -7,6 +7,7 @@ import sys
 
 from models.asset import Asset, AssetStore
 import config
+from utils.logger import logger
 
 # 素材仓库单例
 _store: AssetStore | None = None
@@ -43,6 +44,7 @@ def import_asset(file_storage, original_filename: str) -> dict:
     ext = original_filename.rsplit('.', 1)[-1].lower() if '.' in original_filename else 'bin'
     saved_filename = f'{asset.id}.{ext}'
     saved_path = os.path.join(config.ASSETS_DIR, saved_filename)
+    logger.info(f"正在导入素材: {original_filename} (类型: {asset.type})")
     os.makedirs(config.ASSETS_DIR, exist_ok=True)
     file_storage.save(saved_path)
 
@@ -82,7 +84,7 @@ def generate_thumbnail(source_path: str, asset_id: str, asset_type: str) -> str:
         elif asset_type == Asset.TYPE_AUDIO:
             _thumbnail_audio(thumbnail_path)
     except Exception as e:
-        print(f'缩略图生成失败 ({asset_id}): {e}', file=sys.stderr)
+        logger.error(f'缩略图生成失败 ({asset_id}): {e}')
         _thumbnail_placeholder(thumbnail_path, asset_type)
 
     return thumbnail_filename

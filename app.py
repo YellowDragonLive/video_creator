@@ -8,13 +8,23 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 
 import config
 from services import prompt_service, asset_service, gemini_service
+from utils.logger import logger
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
 
 # 确保目录存在
-for d in [config.PROJECTS_DIR, config.ASSETS_DIR, config.THUMBNAILS_DIR]:
+for d in [config.PROJECTS_DIR, config.ASSETS_DIR, config.THUMBNAILS_DIR, config.LOGS_DIR]:
     os.makedirs(d, exist_ok=True)
+
+
+# ── 全局异常捕获 ──────────────────────────────────────────────
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """记录所有未处理的异常到日志"""
+    logger.error(f"未处理的全局异常: {str(e)}", exc_info=True)
+    return jsonify({"error": "服务器内部错误，请检查日志", "details": str(e)}), 500
 
 
 # ── 页面路由 ──────────────────────────────────────────────────
@@ -224,7 +234,7 @@ def serve_asset(filename):
 # ── 入口 ──────────────────────────────────────────────────────
 
 if __name__ == '__main__':
-    print(f'🎬 Seedance 视频制作工具启动中...')
-    print(f'📁 项目目录: {config.BASE_DIR}')
-    print(f'🌐 访问地址: http://localhost:{config.PORT}')
+    logger.info('🎬 Seedance 视频制作工具启动中...')
+    logger.info(f'📁 项目根目录: {config.BASE_DIR}')
+    logger.info(f'🌐 访问地址: http://{config.HOST}:{config.PORT}')
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)

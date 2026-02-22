@@ -19,6 +19,8 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 PROJECTS_DIR = os.path.join(DATA_DIR, 'projects')
 ASSETS_DIR = os.path.join(DATA_DIR, 'assets')
 THUMBNAILS_DIR = os.path.join(DATA_DIR, 'thumbnails')
+LOGS_DIR = os.path.join(DATA_DIR, 'logs')
+LOG_FILE = os.path.join(LOGS_DIR, 'app.log')
 
 # Flask 配置
 HOST = '0.0.0.0'

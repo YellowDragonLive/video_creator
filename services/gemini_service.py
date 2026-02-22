@@ -11,6 +11,7 @@ from google.genai import types
 
 import config
 from services import asset_service
+from utils.logger import logger
 
 
 def _get_client():
@@ -48,6 +49,7 @@ def generate_prompt(idea: str) -> dict:
     Returns:
         dict: {subject, scene, action, camera, atmosphere}
     """
+    logger.info(f"正在使用 Gemini 生成五要素 Prompt: {idea[:50]}...")
     client = _get_client()
 
     response = client.models.generate_content(
@@ -75,7 +77,7 @@ def generate_prompt(idea: str) -> dict:
     try:
         return json.loads(response.text)
     except (json.JSONDecodeError, TypeError) as e:
-        print(f'AI Prompt 解析失败: {e}', file=sys.stderr)
+        logger.error(f'AI Prompt 解析失败: {e}')
         raise RuntimeError(f'AI 返回格式异常: {e}')
 
 
@@ -92,6 +94,7 @@ def generate_image(prompt: str, aspect_ratio: str = '16:9') -> dict:
     Returns:
         dict: 已保存的素材元数据
     """
+    logger.info(f"正在使用 Gemini 生成图片素材: {prompt[:50]}...")
     client = _get_client()
 
     response = client.models.generate_content(
