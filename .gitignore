@@ -37,3 +37,7 @@ desktop.ini
 
 # 日志
 *.log
+
+# 敏感信息
+.env
+.env.local
