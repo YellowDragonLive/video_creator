@@ -297,4 +297,69 @@ document.addEventListener('DOMContentLoaded', () => {
             Toast.error(`删除失败: ${err.message}`);
         }
     });
+
+    // ── AI 生成图片 ──────────────────────────────────
+    const aiImageModal = document.getElementById('ai-image-modal');
+    const aiImagePrompt = document.getElementById('ai-image-prompt');
+    const aiImageBtnText = document.getElementById('ai-image-btn-text');
+    let aiImageRatio = '16:9';
+
+    document.getElementById('btn-ai-image').addEventListener('click', () => {
+        aiImageModal.style.display = 'flex';
+        aiImagePrompt.value = '';
+        aiImagePrompt.focus();
+    });
+
+    document.getElementById('btn-close-ai-image').addEventListener('click', () => {
+        aiImageModal.style.display = 'none';
+    });
+
+    document.getElementById('btn-cancel-ai-image').addEventListener('click', () => {
+        aiImageModal.style.display = 'none';
+    });
+
+    // 宽高比选择
+    document.getElementById('ai-image-ratio').addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        document.querySelectorAll('#ai-image-ratio .chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        aiImageRatio = chip.dataset.value;
+    });
+
+    document.getElementById('btn-confirm-ai-image').addEventListener('click', async () => {
+        const prompt = aiImagePrompt.value.trim();
+        if (!prompt) {
+            Toast.error('请输入图片描述');
+            return;
+        }
+
+        aiImageBtnText.textContent = '⏳ AI 生成中...';
+        document.getElementById('btn-confirm-ai-image').disabled = true;
+
+        try {
+            const result = await api.post('/api/ai/generate-image', {
+                prompt,
+                aspect_ratio: aiImageRatio,
+            });
+
+            aiImageModal.style.display = 'none';
+            Toast.success('🎨 AI 素材图片生成成功');
+            loadAssets();
+            loadTags();
+        } catch (err) {
+            Toast.error(`AI 图片生成失败: ${err.message}`);
+        } finally {
+            aiImageBtnText.textContent = '🎨 生成';
+            document.getElementById('btn-confirm-ai-image').disabled = false;
+        }
+    });
+
+    // 回车触发 AI 图片生成
+    aiImagePrompt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('btn-confirm-ai-image').click();
+        }
+    });
 });

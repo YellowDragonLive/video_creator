@@ -32,7 +32,7 @@
         <div class="tag-chips" id="tag-chips"></div>
     </div>
 
-    <!-- 上传区 -->
+    <!-- 上传区 + AI 生成 -->
     <div class="upload-zone" id="upload-zone">
         <div class="upload-content">
             <div class="upload-icon">📤</div>
@@ -46,6 +46,9 @@
             </div>
             <span class="progress-text" id="progress-text">上传中...</span>
         </div>
+    </div>
+    <div style="text-align:center;margin:-12px 0 16px;">
+        <button class="btn btn-accent" id="btn-ai-image" title="AI 智能生成素材图片">🎨 AI 生成图片</button>
     </div>
 
     <!-- 素材网格 -->
@@ -82,6 +85,35 @@
         </div>
         <div class="sidebar-actions">
             <button class="btn btn-danger btn-sm" id="btn-delete-asset">🗑️ 删除素材</button>
+        </div>
+    </div>
+</div>
+
+<!-- AI 图片生成对话框 -->
+<div class="modal-overlay" id="ai-image-modal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>🎨 AI 生成素材图片</h3>
+            <button class="btn-close" id="btn-close-ai-image">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label class="param-label">描述你想生成的图片</label>
+            <textarea class="modal-input" id="ai-image-prompt" rows="3" placeholder="例：一瓶精致的香水，放在大理石台面上，柔和的商业光影..."
+                style="resize:vertical;"></textarea>
+            <div style="margin-top:12px;">
+                <label class="param-label">宽高比</label>
+                <div class="param-chips" id="ai-image-ratio">
+                    <button class="chip chip-sm active" data-value="16:9">16:9</button>
+                    <button class="chip chip-sm" data-value="1:1">1:1</button>
+                    <button class="chip chip-sm" data-value="9:16">9:16</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" id="btn-cancel-ai-image">取消</button>
+            <button class="btn btn-accent" id="btn-confirm-ai-image">
+                <span id="ai-image-btn-text">🎨 生成</span>
+            </button>
         </div>
     </div>
 </div>

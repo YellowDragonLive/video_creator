@@ -369,4 +369,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── 初始化预览 ───────────────────────────────────
     updatePreview();
+
+    // ── AI 生成 Prompt ───────────────────────────────
+    const aiModal = document.getElementById('ai-prompt-modal');
+    const aiInput = document.getElementById('ai-idea-input');
+    const aiBtnText = document.getElementById('ai-prompt-btn-text');
+
+    document.getElementById('btn-ai-prompt').addEventListener('click', () => {
+        aiModal.style.display = 'flex';
+        aiInput.value = '';
+        aiInput.focus();
+    });
+
+    document.getElementById('btn-close-ai-prompt').addEventListener('click', () => {
+        aiModal.style.display = 'none';
+    });
+
+    document.getElementById('btn-cancel-ai-prompt').addEventListener('click', () => {
+        aiModal.style.display = 'none';
+    });
+
+    document.getElementById('btn-confirm-ai-prompt').addEventListener('click', async () => {
+        const idea = aiInput.value.trim();
+        if (!idea) {
+            Toast.error('请输入创意描述');
+            return;
+        }
+
+        aiBtnText.textContent = '⏳ AI 思考中...';
+        document.getElementById('btn-confirm-ai-prompt').disabled = true;
+
+        try {
+            const result = await api.post('/api/ai/generate-prompt', { idea });
+
+            // 填充五要素
+            ['subject', 'scene', 'action', 'camera', 'atmosphere'].forEach(key => {
+                if (result[key]) {
+                    state[key] = result[key];
+                    inputs[key].value = result[key];
+                }
+            });
+
+            updatePreview();
+            aiModal.style.display = 'none';
+            Toast.success('✨ AI 已生成五要素 Prompt');
+        } catch (err) {
+            Toast.error(`AI 生成失败: ${err.message}`);
+        } finally {
+            aiBtnText.textContent = '✨ 生成';
+            document.getElementById('btn-confirm-ai-prompt').disabled = false;
+        }
+    });
+
+    // 回车触发 AI 生成
+    aiInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            document.getElementById('btn-confirm-ai-prompt').click();
+        }
+    });
 });

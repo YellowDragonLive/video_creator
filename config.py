@@ -1,9 +1,18 @@
 """Seedance 视频制作工具 - 全局配置"""
 
 import os
+from dotenv import load_dotenv
 
 # 项目根目录
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 加载 .env 文件
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+# Gemini AI 配置
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+GEMINI_PROMPT_MODEL = 'gemini-2.5-flash'
+GEMINI_IMAGE_MODEL = 'gemini-2.0-flash-preview-image-generation'
 
 # 数据目录
 DATA_DIR = os.path.join(BASE_DIR, 'data')

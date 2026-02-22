@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <!-- 模板选择 -->
+        <!-- 模板选择 + AI 生成 -->
         <div class="template-bar">
             <span class="template-label">快速模板：</span>
             <div class="template-chips" id="template-chips">
@@ -25,6 +25,7 @@
                 <button class="chip" data-template-id="{{ t.id }}">{{ t.name }}</button>
                 {% endfor %}
             </div>
+            <button class="btn btn-accent btn-sm" id="btn-ai-prompt" title="AI 智能生成五要素">✨ AI 生成</button>
         </div>
 
         <!-- 五要素输入区 -->
@@ -202,6 +203,27 @@
         <div class="modal-footer">
             <button class="btn btn-ghost" id="btn-cancel-save">取消</button>
             <button class="btn btn-primary" id="btn-confirm-save">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- AI 生成 Prompt 对话框 -->
+<div class="modal-overlay" id="ai-prompt-modal" style="display:none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>✨ AI 智能生成 Prompt</h3>
+            <button class="btn-close" id="btn-close-ai-prompt">&times;</button>
+        </div>
+        <div class="modal-body">
+            <label class="param-label">描述你的视频创意（AI 将自动生成五要素）</label>
+            <textarea class="modal-input" id="ai-idea-input" rows="4" placeholder="例：一个古风女子撑着油纸伞，漫步在烟雨蒙蒙的江南水乡..."
+                style="resize:vertical;"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" id="btn-cancel-ai-prompt">取消</button>
+            <button class="btn btn-accent" id="btn-confirm-ai-prompt">
+                <span id="ai-prompt-btn-text">✨ 生成</span>
+            </button>
         </div>
     </div>
 </div>

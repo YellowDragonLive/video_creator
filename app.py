@@ -7,7 +7,7 @@ import sys
 from flask import Flask, render_template, request, jsonify, send_from_directory
 
 import config
-from services import prompt_service, asset_service
+from services import prompt_service, asset_service, gemini_service
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
@@ -171,6 +171,40 @@ def get_all_tags():
     """获取所有标签"""
     tags = asset_service.get_all_tags()
     return jsonify({'tags': tags})
+
+
+# ── AI API ────────────────────────────────────────────────────
+
+@app.route('/api/ai/generate-prompt', methods=['POST'])
+def ai_generate_prompt():
+    """AI 生成五要素 Prompt"""
+    data = request.get_json()
+    idea = data.get('idea', '').strip() if data else ''
+    if not idea:
+        return jsonify({'error': '请输入创意描述'}), 400
+
+    try:
+        result = gemini_service.generate_prompt(idea)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': f'AI 生成失败: {str(e)}'}), 500
+
+
+@app.route('/api/ai/generate-image', methods=['POST'])
+def ai_generate_image():
+    """AI 生成素材图片"""
+    data = request.get_json()
+    prompt = data.get('prompt', '').strip() if data else ''
+    if not prompt:
+        return jsonify({'error': '请输入图片描述'}), 400
+
+    aspect_ratio = data.get('aspect_ratio', '16:9')
+
+    try:
+        asset = gemini_service.generate_image(prompt, aspect_ratio)
+        return jsonify({'asset': asset, 'message': 'AI 素材生成成功'})
+    except Exception as e:
+        return jsonify({'error': f'AI 图片生成失败: {str(e)}'}), 500
 
 
 # ── 静态文件服务 ──────────────────────────────────────────────
